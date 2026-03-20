@@ -50,7 +50,7 @@ export interface ScoreCategory {
 export interface ScorecardResult {
   totalScore: number;
   maxScore: number;
-  conviction: "Low" | "Medium" | "High" | "Very High";
+  conviction: "Very Weak Fundamentals" | "Weak Fundamentals" | "Mixed Fundamentals" | "Strong Fundamentals" | "Very Strong Fundamentals";
   categories: ScoreCategory[];
 }
 
@@ -257,10 +257,11 @@ export function calculateScorecard(data: StockData): ScorecardResult {
   const totalScore = categories.reduce((sum, cat) => sum + cat.score, 0);
 
   let conviction: ScorecardResult["conviction"];
-  if (totalScore >= 40) conviction = "Very High";
-  else if (totalScore >= 30) conviction = "High";
-  else if (totalScore >= 20) conviction = "Medium";
-  else conviction = "Low";
+  if (totalScore >= 40) conviction = "Very Strong Fundamentals";
+  else if (totalScore >= 30) conviction = "Strong Fundamentals";
+  else if (totalScore >= 20) conviction = "Mixed Fundamentals";
+  else if (totalScore >= 10) conviction = "Weak Fundamentals";
+  else conviction = "Very Weak Fundamentals";
 
   return { totalScore, maxScore: 50, conviction, categories };
 }
@@ -273,56 +274,56 @@ export function generateBullBear(data: StockData): BullBearResult {
 
   // Valuation
   if (data.trailingPE !== null) {
-    if (data.trailingPE < 15) bullPoints.push(`Attractive valuation with a P/E of ${data.trailingPE.toFixed(1)} — market may be underpricing this business`);
+    if (data.trailingPE < 15) bullPoints.push(`P/E of ${data.trailingPE.toFixed(1)} — below the broader market average, which typically ranges from 15–20`);
     else if (data.trailingPE > 25) bearPoints.push(`P/E of ${data.trailingPE.toFixed(1)} prices in a lot of optimism — risk of multiple compression`);
   }
 
   if (data.pegRatio !== null && data.pegRatio < 1) {
-    bullPoints.push(`PEG ratio of ${data.pegRatio.toFixed(2)} means you're getting growth at a discount`);
+    bullPoints.push(`PEG ratio of ${data.pegRatio.toFixed(2)} — growth rate is outpacing the valuation multiple`);
   } else if (data.pegRatio !== null && data.pegRatio > 2) {
     bearPoints.push(`PEG of ${data.pegRatio.toFixed(2)} — paying a premium for the growth story`);
   }
 
   // Margins & Moat
   if (data.grossMargins !== null && data.grossMargins > 0.5) {
-    bullPoints.push(`Gross margins of ${(data.grossMargins * 100).toFixed(1)}% indicate strong pricing power and a durable competitive position`);
+    bullPoints.push(`Gross margins of ${(data.grossMargins * 100).toFixed(1)}% — well above average, reflecting pricing power in the business model`);
   } else if (data.grossMargins !== null && data.grossMargins < 0.25) {
     bearPoints.push(`Thin gross margins (${(data.grossMargins * 100).toFixed(1)}%) leave little room for error`);
   }
 
   if (data.returnOnEquity !== null && data.returnOnEquity > 0.2) {
-    bullPoints.push(`ROE of ${(data.returnOnEquity * 100).toFixed(1)}% shows the business generates strong returns on shareholder capital`);
+    bullPoints.push(`ROE of ${(data.returnOnEquity * 100).toFixed(1)}% — the business is generating returns well above most benchmarks`);
   }
 
   // Balance sheet
   if (data.debtToEquity !== null && data.debtToEquity < 50) {
-    bullPoints.push("Conservative balance sheet with low leverage — can weather downturns");
+    bullPoints.push("Low leverage on the balance sheet — debt exposure is limited relative to equity");
   } else if (data.debtToEquity !== null && data.debtToEquity > 150) {
     bearPoints.push(`Debt-to-equity of ${data.debtToEquity.toFixed(0)} is concerning — rising rates could squeeze margins`);
   }
 
   if (data.freeCashflow !== null && data.freeCashflow > 0) {
-    bullPoints.push(`Generating $${formatLargeNumber(data.freeCashflow)} in free cash flow — real money, not just accounting profits`);
+    bullPoints.push(`Free cash flow of $${formatLargeNumber(data.freeCashflow)} — earnings are backed by actual cash generation`);
   } else if (data.freeCashflow !== null && data.freeCashflow < 0) {
     bearPoints.push("Burning cash — need to see a path to positive free cash flow");
   }
 
   // Growth
   if (data.revenueGrowth !== null && data.revenueGrowth > 0.1) {
-    bullPoints.push(`Revenue growing ${(data.revenueGrowth * 100).toFixed(1)}% — top-line momentum is intact`);
+    bullPoints.push(`Revenue up ${(data.revenueGrowth * 100).toFixed(1)}% year-over-year — top-line growth is reflected in the data`);
   } else if (data.revenueGrowth !== null && data.revenueGrowth < -0.05) {
     bearPoints.push(`Revenue declining ${(data.revenueGrowth * 100).toFixed(1)}% — shrinking business is hard to value-invest into`);
   }
 
   if (data.earningsGrowth !== null && data.earningsGrowth > 0.15) {
-    bullPoints.push(`Earnings growing ${(data.earningsGrowth * 100).toFixed(1)}% — profit engine accelerating`);
+    bullPoints.push(`Earnings up ${(data.earningsGrowth * 100).toFixed(1)}% year-over-year — profitability metrics are expanding`);
   } else if (data.earningsGrowth !== null && data.earningsGrowth < -0.1) {
     bearPoints.push(`Earnings shrinking ${(data.earningsGrowth * 100).toFixed(1)}% — profitability under pressure`);
   }
 
   // Dividend
   if (data.dividendYield > 0.03) {
-    bullPoints.push(`${(data.dividendYield * 100).toFixed(2)}% dividend yield provides income while you wait`);
+    bullPoints.push(`${(data.dividendYield * 100).toFixed(2)}% dividend yield — the stock is distributing cash to shareholders`);
   }
   if (data.payoutRatio !== null && data.payoutRatio > 0.8) {
     bearPoints.push(`Payout ratio of ${(data.payoutRatio * 100).toFixed(0)}% — dividend may not be sustainable`);
@@ -333,7 +334,7 @@ export function generateBullBear(data: StockData): BullBearResult {
   if (range > 0) {
     const position = (data.currentPrice - data.fiftyTwoWeekLow) / range;
     if (position < 0.3) {
-      bullPoints.push("Trading near the bottom of its 52-week range — contrarian opportunity if fundamentals hold");
+      bullPoints.push("Trading near the bottom of its 52-week range — price is well below its recent high");
     } else if (position > 0.9) {
       bearPoints.push("At the top of its 52-week range — limited upside without a catalyst");
     }
@@ -346,12 +347,12 @@ export function generateBullBear(data: StockData): BullBearResult {
   if (data.beta !== null && data.beta > 1.5) {
     bearPoints.push(`High beta of ${data.beta.toFixed(2)} — this stock amplifies market swings`);
   } else if (data.beta !== null && data.beta < 0.7) {
-    bullPoints.push(`Low beta of ${data.beta.toFixed(2)} — defensive characteristics in volatile markets`);
+    bullPoints.push(`Beta of ${data.beta.toFixed(2)} — historically less volatile than the broader market`);
   }
 
   // Ensure at least one point each
-  if (bullPoints.length === 0) bullPoints.push("Limited bullish signals — requires deeper due diligence");
-  if (bearPoints.length === 0) bearPoints.push("No major red flags identified from available data");
+  if (bullPoints.length === 0) bullPoints.push("Limited positive signals in the available data — additional research may be warranted");
+  if (bearPoints.length === 0) bearPoints.push("No significant negative signals identified from available data");
 
   return { bullPoints, bearPoints };
 }

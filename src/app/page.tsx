@@ -29,10 +29,11 @@ const scorecardExplanations: Record<string, string> = {
 };
 
 const convictionExplanations: Record<string, string> = {
-  "Very High": "40-50 points. Strong across all categories. The kind of opportunity the Zen Dhandho method was built for — fair price, strong business, solid margin of safety.",
-  "High": "30-39 points. Most indicators look favorable. Worth serious consideration, but dig deeper into any weak categories before committing.",
-  "Medium": "20-29 points. Mixed signals. Some strengths, some concerns. Might be worth watching, but the setup isn't compelling enough to act on without more research.",
-  "Low": "Below 20 points. Multiple red flags. Either overvalued, fundamentally weak, or both. The Zen Dhandho approach says patience — wait for a better setup.",
+  "Very Strong Fundamentals": "40-50 points. Most measured indicators score in the high range. The data reflects broad strength across categories.",
+  "Strong Fundamentals": "30-39 points. Most measured indicators score favorably. Review any lower-scoring categories for a more complete picture.",
+  "Mixed Fundamentals": "20-29 points. Indicators are mixed. Some categories score well while others reflect meaningful weakness.",
+  "Weak Fundamentals": "10-19 points. Several categories score below average. The data reflects notable weakness in key areas.",
+  "Very Weak Fundamentals": "0-9 points. Most measured indicators score poorly. Multiple categories show significant weakness.",
 };
 
 export default function Home() {
@@ -76,10 +77,11 @@ export default function Home() {
 
   const convictionColor = (conviction: string) => {
     switch (conviction) {
-      case "Very High": return "text-[#5A9E70]";
-      case "High": return "text-[#5A9E70]";
-      case "Medium": return "text-[#E4C060]";
-      case "Low": return "text-[#C85A4A]";
+      case "Very Strong Fundamentals": return "text-[#5A9E70]";
+      case "Strong Fundamentals": return "text-[#5A9E70]";
+      case "Mixed Fundamentals": return "text-[#E4C060]";
+      case "Weak Fundamentals": return "text-[#C85A4A]";
+      case "Very Weak Fundamentals": return "text-[#C85A4A]";
       default: return "text-[#8A7A58]";
     }
   };
@@ -226,6 +228,13 @@ export default function Home() {
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* Compliance Disclaimer */}
+            <div className="rounded-lg p-4" style={{ background: "var(--zd-bg-card)", border: "1px solid var(--zd-gold-border)" }}>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--zd-cream-dim)", fontFamily: "var(--font-jost), Jost, sans-serif" }}>
+                This scorecard is for educational and informational purposes only. It is not financial advice, a securities recommendation, or a solicitation to buy or sell any security. Scores reflect how a company&apos;s publicly available data maps to the Zen Dhandho framework — not a prediction of future performance. Always conduct your own research.
+              </p>
             </div>
 
             {/* Scorecard */}
