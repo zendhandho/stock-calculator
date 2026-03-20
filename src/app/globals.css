@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+:root {
+  /* Zen Dhandho Color Palette */
+  --zd-bg-deep: #0B1A0E;
+  --zd-bg-panel: #0F2014;
+  --zd-bg-card: #162B1A;
+  --zd-bg-card-hover: #1C3520;
+  --zd-gold: #C8A428;
+  --zd-gold-bright: #E4C060;
+  --zd-gold-muted: #8A7A58;
+  --zd-cream: #F0E4C0;
+  --zd-cream-dim: #B8A880;
+  --zd-green-accent: #5A9E70;
+  --zd-green-soft: rgba(90, 158, 112, 0.15);
+  --zd-gold-soft: rgba(200, 164, 40, 0.08);
+  --zd-gold-border: rgba(200, 164, 40, 0.2);
+  --zd-red: #C85A4A;
+  --zd-red-soft: rgba(200, 90, 74, 0.15);
+  --zd-red-border: rgba(200, 90, 74, 0.25);
+
+  --background: var(--zd-bg-deep);
+  --foreground: var(--zd-cream);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-heading: var(--font-cormorant);
+  --font-body: var(--font-jost);
+}
+
+body {
+  background: var(--zd-bg-deep);
+  color: var(--zd-gold-muted);
+  font-family: var(--font-jost), "Jost", sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+/* Heading font — light weight, cream only for major headings */
+h1, h2, h3 {
+  font-family: var(--font-cormorant), "Cormorant Garamond", serif;
+  font-weight: 300;
+  color: var(--zd-cream);
+}
+
+/* Custom scrollbar to match theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--zd-bg-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--zd-gold-muted);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--zd-gold);
+}
